@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--img", "../Art/cat_proto.bmp"]
+            "args":["--img", "../Art/cat_head_forward.bmp"]
         }
     ]
 }
