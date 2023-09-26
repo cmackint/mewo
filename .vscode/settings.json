@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "curses.h": "c",
-        "ncurses.h": "c"
-    }
+        "ncurses.h": "c",
+        "mewo.h": "c"
+    },
+    "cmake.configureOnOpen": false
 }

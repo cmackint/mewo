@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define DISPLAY_COLS (128)
-#define DISPLAY_ROWS (64)
+#define MEWO_DISPLAY_COLS (128)
+#define MEWO_DISPLAY_ROWS (64)
 
 typedef enum {
     MEWO_STATE_SIT,
@@ -14,7 +14,7 @@ typedef enum {
 } mewo_state;
 
 typedef struct {
-    uint8_t **fdata;
+    uint8_t *fdata;
     int num_rows;
     int num_cols;
     int y_offset;
@@ -54,7 +54,7 @@ typedef struct {
     mewo_head_frame head_frame;
     mewo_frame_info *head_frame_info;
     bool stale;
-    bool vbuffer[DISPLAY_ROWS][DISPLAY_COLS];
+    bool vbuffer[MEWO_DISPLAY_ROWS][MEWO_DISPLAY_COLS];
 } mewo;
 
 void mewo_init(mewo *m, mewo_config *config, uint64_t time_ms);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "mewo.h"
 #include "frames.h"
+#include "transforms.h"
 
 #define SEC_PER_DAY (86400)
 #define SEC_PER_HOUR (3600)
@@ -23,6 +24,7 @@ void mewo_init(mewo *m, mewo_config *config, uint64_t time_ms) {
     m->state = MEWO_STATE_SIT;
 
     memset(m->vbuffer, 0, sizeof(m->vbuffer));
+    mewo_frames_init();
 }
 
 void mewo_tick(mewo *m, uint64_t time_ms) {
@@ -31,8 +33,12 @@ void mewo_tick(mewo *m, uint64_t time_ms) {
     mewo_refresh(m);
 }
 
-bool mewo_get_pixel(mewo *m, int row_index, int col_index) {
-    return m->vbuffer[row_index][col_index];
+bool mewo_get_pixel(mewo *m, int x, int y) {
+    if (x >= 0 && x < MEWO_DISPLAY_COLS && y >= 0 && y < MEWO_DISPLAY_ROWS) {
+        return m->vbuffer[y][x];
+    } else {
+        return false;
+    }
 }
 
 void mewo_set_body_frame(mewo *m, mewo_body_frame frame) {
@@ -49,20 +55,15 @@ void _load_bitmap(mewo *m, int start_x, int start_y, mewo_frame_info *frame_info
     // Iterate through the frame pixels by row/col
     for (int row = 0; row < frame_info->num_rows; row++) {
         for (int col = 0; col < frame_info->num_cols; col++) {
-            uint8_t pix8 = m->body_frame_info->fdata[row][col];
+            uint8_t pix8 = frame_info->fdata[row * frame_info->num_cols + col];
             for (int bit_index = 0; bit_index < 8; bit_index++) {
                 if (pix8 & (1 << bit_index)) {
-                    // Convert the pixel coordinates from frame row/col to vbuffer x/y
-                    int x = start_x + col;
-                    int y = start_y + m->body_frame_info->num_rows - (row+1);
+                    // Convert the pixel coordinates from frame row/col to x/y
+                    int x = start_x + col * 8 + (7 - bit_index);
+                    int y = start_y + frame_info->num_rows - (row+1);
 
-                    // Convert the pixel coordinatesfrom vbuffer x/y to vbuffer row/col
-                    int vbuff_row = DISPLAY_ROWS - y - 1;
-                    int vbuff_col = x;
-
-                    // Set the vbuffer pixel if in bounds
-                    if (vbuff_row >= 0 && vbuff_row < DISPLAY_ROWS && vbuff_col >= 0 && vbuff_col < DISPLAY_COLS) {
-                        m->vbuffer[vbuff_row][vbuff_col] = true;
+                    if (y >= 0 && y < MEWO_DISPLAY_ROWS && x >= 0 && x < MEWO_DISPLAY_COLS) {
+                        m->vbuffer[y][x] = true;
                     }
                 }
             }
@@ -112,16 +113,16 @@ void mewo_refresh(mewo *m) {
             m->head_frame_info = &MEWO_HEAD_FORWARD;
             break;
         case MEWO_HEAD_FRAME_SIDE_LEFT:
-            m->head_frame_info = &MEWO_HEAD_SIDE;
+            m->head_frame_info = &MEWO_HEAD_SIDE_LEFT;
             break;
         case MEWO_HEAD_FRAME_SIDE_RIGHT:
             // TODO: Mirror
-            m->head_frame_info = &MEWO_HEAD_SIDE;
+            m->head_frame_info = &MEWO_HEAD_SIDE_RIGHT;
             break;
     }
             
-    int head_x = m->x_pos + m->head_frame_info->x_offset + m->body_frame_info->x_offset;
-    int head_y = m->head_frame_info->y_offset + m->body_frame_info->y_offset;
+    int head_x = body_x + m->head_frame_info->x_offset;
+    int head_y = body_y + m->head_frame_info->y_offset;
     _load_bitmap(m, head_x, head_y, m->head_frame_info);
 
     m->stale = false;
@@ -195,7 +196,7 @@ void _handle_walk(mewo *m) {
         // Set the speed to walk back + forth
         if (m->x_pos <= 0) {
             m->x_speed = 1;
-        } else if (m->x_pos >= DISPLAY_COLS-1) {
+        } else if (m->x_pos >= MEWO_DISPLAY_COLS-1) {
             m->x_speed = -1;
         } else {
             m->x_speed = 1;

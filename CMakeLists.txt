@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.15)
 project(mewo C)
 
 add_executable(mewo 
-    src/mewo.c
     src/main.c
+    src/mewo.c
+    src/transforms.c
 )
 add_executable(frame_validation
     src/mewo.c
+    src/transforms.c
     test/frame_validation.c
 )
 
