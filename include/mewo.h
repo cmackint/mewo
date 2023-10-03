@@ -19,23 +19,31 @@ typedef struct {
     int num_cols;
     int y_offset;
     int x_offset;
-} mewo_frame_info;
+} mewo_body_frame_info;
+
+typedef struct {
+    uint8_t *fdata;
+    int num_rows;
+    int num_cols;
+} mewo_head_frame_info;
 
 typedef enum {
-    MEWO_BODY_FRAME_WALK_A_LEFT,
+    MEWO_BODY_FRAME_WALK_A_LEFT = 0,
     MEWO_BODY_FRAME_WALK_A_RIGHT,
     MEWO_BODY_FRAME_WALK_B_LEFT,
     MEWO_BODY_FRAME_WALK_B_RIGHT,
     MEWO_BODY_FRAME_SIT,
     MEWO_BODY_FRAME_SIT_TAIL,
     MEWO_BODY_FRAME_SLEEP,
+    MEWO_BODY_FRAME_LEN
 } mewo_body_frame;
 
 typedef enum {
-    MEWO_HEAD_FRAME_FORWARD,
+    MEWO_HEAD_FRAME_FORWARD = 0,
     MEWO_HEAD_FRAME_FORWARD_BLINK,
     MEWO_HEAD_FRAME_SIDE_LEFT,
-    MEWO_HEAD_FRAME_SIDE_RIGHT
+    MEWO_HEAD_FRAME_SIDE_RIGHT,
+    MEWO_HEAD_FRAME_LEN
 } mewo_head_frame;
 
 typedef struct {
@@ -52,9 +60,9 @@ typedef struct {
     uint16_t x_pos;
     int16_t x_speed;
     mewo_body_frame body_frame;
-    mewo_frame_info *body_frame_info;
+    mewo_body_frame_info *body_frame_info;
     mewo_head_frame head_frame;
-    mewo_frame_info *head_frame_info;
+    mewo_head_frame_info *head_frame_info;
     bool stale;
     bool vbuffer[MEWO_DISPLAY_ROWS][MEWO_DISPLAY_COLS];
 } mewo;

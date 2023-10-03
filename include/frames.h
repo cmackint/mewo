@@ -5,6 +5,25 @@
 #include "mewo.h"
 #include "transforms.h"
 
+int X_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
+    {-7, 0, -3, -8},
+    {14, 0, 18, 12},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {-6, 0, -2, -8},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0}
+};
+
+int Y_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
+    {13, 0, 13, 13},
+    {13, 0, 13, 13},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {13, 0, 13, 13},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0}
+};
 
 #define _FDATA_BODY_SIT_ROWS (14)
 #define _FDATA_BODY_SIT_COLS (3)
@@ -24,7 +43,7 @@ uint8_t _FDATA_BODY_SIT[_FDATA_BODY_SIT_ROWS * _FDATA_BODY_SIT_COLS] = {
     0x24, 0x87, 0xc0,
     0x1b, 0x78, 0x00
 };
-mewo_frame_info MEWO_BODY_SIT = {
+mewo_body_frame_info MEWO_BODY_SIT = {
     .fdata = _FDATA_BODY_SIT,
     .num_rows = _FDATA_BODY_SIT_ROWS,
     .num_cols = _FDATA_BODY_SIT_COLS,
@@ -57,15 +76,15 @@ uint8_t _FDATA_BODY_WALK_A_LEFT[_FDATA_BODY_WALK_A_ROWS * _FDATA_BODY_WALK_A_COL
     0x94, 0x02, 0x50, 0x00,
     0x78, 0x01, 0xe0, 0x00
 };
-mewo_frame_info MEWO_BODY_WALK_A_LEFT = {
+mewo_body_frame_info MEWO_BODY_WALK_A_LEFT = {
     .fdata = _FDATA_BODY_WALK_A_LEFT,
     .num_rows = _FDATA_BODY_WALK_A_ROWS,
     .num_cols = _FDATA_BODY_WALK_A_COLS,
     .y_offset = 0,
-    .x_offset = 3
+    .x_offset = 7
 };
 uint8_t _FDATA_BODY_WALK_A_RIGHT[_FDATA_BODY_WALK_A_ROWS * _FDATA_BODY_WALK_A_COLS];
-mewo_frame_info MEWO_BODY_WALK_A_RIGHT;
+mewo_body_frame_info MEWO_BODY_WALK_A_RIGHT;
 
 
 // Head frames
@@ -91,12 +110,10 @@ uint8_t _FDATA_HEAD_FORWARD[_FDATA_HEAD_FORWARD_ROWS * _FDATA_HEAD_FORWARD_COLS]
     0x03, 0x80, 0xe0, 0x00,
     0x00, 0x7f, 0x00, 0x00
 };
-mewo_frame_info MEWO_HEAD_FORWARD = {
+mewo_head_frame_info MEWO_HEAD_FORWARD = {
     .fdata = _FDATA_HEAD_FORWARD,
     .num_rows = _FDATA_HEAD_FORWARD_ROWS,
-    .num_cols = _FDATA_HEAD_FORWARD_COLS,
-    .y_offset = 14,
-    .x_offset = -6
+    .num_cols = _FDATA_HEAD_FORWARD_COLS
 };
 
 #define _FDATA_HEAD_SIDE_ROWS (18)
@@ -121,36 +138,32 @@ uint8_t _FDATA_HEAD_SIDE_LEFT[_FDATA_HEAD_SIDE_ROWS * _FDATA_HEAD_SIDE_COLS] = {
     0x20, 0x03, 0x00,
     0x1f, 0xfc, 0x00
 };
-mewo_frame_info MEWO_HEAD_SIDE_LEFT = {
+mewo_head_frame_info MEWO_HEAD_SIDE_LEFT = {
     .fdata = _FDATA_HEAD_SIDE_LEFT,
     .num_rows = _FDATA_HEAD_SIDE_ROWS,
-    .num_cols = _FDATA_HEAD_SIDE_COLS,
-    .y_offset = 13,
-    .x_offset = -3
+    .num_cols = _FDATA_HEAD_SIDE_COLS
 };
 uint8_t _FDATA_HEAD_SIDE_RIGHT[_FDATA_HEAD_SIDE_ROWS * _FDATA_HEAD_SIDE_COLS];
-mewo_frame_info MEWO_HEAD_SIDE_RIGHT;
+mewo_head_frame_info MEWO_HEAD_SIDE_RIGHT;
 
 
 // Init
 
 void mewo_frames_init() {
     mirror_x(_FDATA_HEAD_SIDE_LEFT, _FDATA_HEAD_SIDE_RIGHT, _FDATA_HEAD_SIDE_ROWS, _FDATA_HEAD_SIDE_COLS);
-    MEWO_HEAD_SIDE_RIGHT = (mewo_frame_info) {
+    MEWO_HEAD_SIDE_RIGHT = (mewo_head_frame_info) {
         .fdata = _FDATA_HEAD_SIDE_RIGHT,
         .num_rows = _FDATA_HEAD_SIDE_ROWS,
-        .num_cols = _FDATA_HEAD_SIDE_COLS,
-        .y_offset = 13,
-        .x_offset = -9
+        .num_cols = _FDATA_HEAD_SIDE_COLS
     };
 
     mirror_x(_FDATA_BODY_WALK_A_LEFT, _FDATA_BODY_WALK_A_RIGHT, _FDATA_BODY_WALK_A_ROWS, _FDATA_BODY_WALK_A_COLS);
-    MEWO_BODY_WALK_A_RIGHT = (mewo_frame_info) {
+    MEWO_BODY_WALK_A_RIGHT = (mewo_body_frame_info) {
         .fdata = _FDATA_BODY_WALK_A_RIGHT,
         .num_rows = _FDATA_BODY_WALK_A_ROWS,
         .num_cols = _FDATA_BODY_WALK_A_COLS,
         .y_offset = 0,
-        .y_offset = 0
+        .x_offset = -5
     };
 }
 

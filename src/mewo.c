@@ -51,16 +51,16 @@ void mewo_set_head_frame(mewo *m, mewo_head_frame frame) {
     m->stale = true;
 }
 
-void _load_bitmap(mewo *m, int start_x, int start_y, mewo_frame_info *frame_info) {
+void _load_bitmap(mewo *m, int start_x, int start_y, uint8_t *fdata, int num_rows, int num_cols) {
     // Iterate through the frame pixels by row/col
-    for (int row = 0; row < frame_info->num_rows; row++) {
-        for (int col = 0; col < frame_info->num_cols; col++) {
-            uint8_t pix8 = frame_info->fdata[row * frame_info->num_cols + col];
+    for (int row = 0; row < num_rows; row++) {
+        for (int col = 0; col < num_cols; col++) {
+            uint8_t pix8 = fdata[row * num_cols + col];
             for (int bit_index = 0; bit_index < 8; bit_index++) {
                 if (pix8 & (1 << bit_index)) {
                     // Convert the pixel coordinates from frame row/col to x/y
                     int x = start_x + col * 8 + (7 - bit_index);
-                    int y = start_y + frame_info->num_rows - (row+1);
+                    int y = start_y + num_rows - (row+1);
 
                     if (y >= 0 && y < MEWO_DISPLAY_ROWS && x >= 0 && x < MEWO_DISPLAY_COLS) {
                         m->vbuffer[y][x] = true;
@@ -110,7 +110,7 @@ void mewo_refresh(mewo *m) {
 
     int body_x = m->x_pos + m->body_frame_info->x_offset;
     int body_y = m->body_frame_info->y_offset;
-    _load_bitmap(m, body_x, body_y, m->body_frame_info);
+    _load_bitmap(m, body_x, body_y, m->body_frame_info->fdata, m->body_frame_info->num_rows, m->body_frame_info->num_cols);
 
     switch (m->head_frame) {
         case MEWO_HEAD_FRAME_FORWARD:
@@ -129,9 +129,9 @@ void mewo_refresh(mewo *m) {
             break;
     }
             
-    int head_x = body_x + m->head_frame_info->x_offset;
-    int head_y = body_y + m->head_frame_info->y_offset;
-    _load_bitmap(m, head_x, head_y, m->head_frame_info);
+    int head_x = body_x + X_OFFSETS[m->body_frame][m->head_frame];
+    int head_y = body_y + Y_OFFSETS[m->body_frame][m->head_frame];
+    _load_bitmap(m, head_x, head_y, m->head_frame_info->fdata, m->head_frame_info->num_rows, m->head_frame_info->num_cols);
 
     m->stale = false;
 }
