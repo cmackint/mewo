@@ -74,8 +74,9 @@ void draw_stats(WINDOW *win, mewo *m) {
     snprintf(buffer, sizeof(buffer), "mewo debugging info");
     mvwprintw(win, 0, (win_width - strlen(buffer)) / 2, buffer);
 
-    snprintf(buffer, sizeof(buffer), "time: %d", m->time_ms);
+    snprintf(buffer, sizeof(buffer), "time: %d     ", m->time_ms);
     mvwprintw(win, 4, 3, buffer);
+
     
     snprintf(buffer, sizeof(buffer), "state: %s", MEWO_STATE_STRING[m->state]);
     mvwprintw(win, 5, 3, buffer);
@@ -85,6 +86,12 @@ void draw_stats(WINDOW *win, mewo *m) {
     
     snprintf(buffer, sizeof(buffer), "body frame: %s", MEWO_BODY_FRAME_STRING[m->body_frame]);
     mvwprintw(win, 7, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "x position: %d", m->x_pos);
+    mvwprintw(win, 8, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "x speed: %d", m->x_speed);
+    mvwprintw(win, 9, 3, buffer);
 
     wrefresh(win);
 }

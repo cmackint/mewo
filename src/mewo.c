@@ -104,7 +104,7 @@ void mewo_refresh(mewo *m) {
             break;
         case MEWO_BODY_FRAME_SIT_TAIL:
             // TODO
-            m->body_frame_info = &MEWO_BODY_SIT;
+            m->body_frame_info = &MEWO_BODY_SIT_TAIL;
             break;
         case MEWO_BODY_FRAME_SLEEP:
             // TODO
@@ -187,31 +187,41 @@ void _handle_sit(mewo *m) {
         }
         m->stale = true;
     }
+
+    // Ocassionally walk around
+    if (rand() % 100 == 0) {
+        m->state = MEWO_STATE_WALK;
+    }
 }
 
 void _handle_walk(mewo *m) {
-    if (m->time_ms >= m->config->sleep_time_ms) {
-        // Set the speed to walk to bed
-        if (m->x_pos > SLEEP_X_POS) {
-            // Walk to the left
-            m->x_speed = -1;
-        } else if (m->x_pos < SLEEP_X_POS) {
-            // Walk to the right
-            m->x_speed = 1;
-        } else {
-            m->x_speed = 0;
-            m->state = MEWO_STATE_SLEEP;
-            return;
-        }
-    } else {
+    // if (m->time_ms >= m->config->sleep_time_ms) {
+    //     // Set the speed to walk to bed
+    //     if (m->x_pos > SLEEP_X_POS) {
+    //         // Walk to the left
+    //         m->x_speed = -1;
+    //     } else if (m->x_pos < SLEEP_X_POS) {
+    //         // Walk to the right
+    //         m->x_speed = 1;
+    //     } else {
+    //         m->x_speed = 0;
+    //         m->state = MEWO_STATE_SLEEP;
+    //         return;
+    //     }
+    // } else {
         // Set the speed to walk back + forth
         if (m->x_pos <= 0) {
             m->x_speed = 1;
         } else if (m->x_pos >= MEWO_DISPLAY_COLS-1) {
             m->x_speed = -1;
-        } else {
+        } else if (m->x_speed == 0) {
             m->x_speed = 1;
         }
+    // }
+
+    if (rand() % 50 == 0) {
+        m->state = MEWO_STATE_SIT;
+        m->x_speed = 0;
     }
 
     // Set next position
