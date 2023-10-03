@@ -33,6 +33,41 @@ mewo_frame_info MEWO_BODY_SIT = {
 };
 
 
+#define _FDATA_BODY_WALK_A_ROWS (20)
+#define _FDATA_BODY_WALK_A_COLS (4)
+uint8_t _FDATA_BODY_WALK_A_LEFT[_FDATA_BODY_WALK_A_ROWS * _FDATA_BODY_WALK_A_COLS] = {
+    0x00, 0x00, 0x01, 0x00,
+    0x00, 0x00, 0x02, 0x80,
+    0x00, 0x00, 0x02, 0x80,
+    0x00, 0x00, 0x02, 0x80,
+    0x00, 0x00, 0x04, 0x80,
+    0x00, 0x00, 0x05, 0x00,
+    0x20, 0x40, 0x09, 0x00,
+    0x40, 0x3f, 0xf2, 0x00,
+    0x40, 0x00, 0x04, 0x00,
+    0x80, 0x00, 0x04, 0x00,
+    0x80, 0x00, 0x04, 0x00,
+    0x80, 0x00, 0x08, 0x00,
+    0x80, 0x00, 0x08, 0x00,
+    0x88, 0x04, 0x08, 0x00,
+    0x88, 0x04, 0x08, 0x00,
+    0x8f, 0xc2, 0x10, 0x00,
+    0x94, 0x3e, 0x30, 0x00,
+    0x94, 0x02, 0x50, 0x00,
+    0x94, 0x02, 0x50, 0x00,
+    0x78, 0x01, 0xe0, 0x00
+};
+mewo_frame_info MEWO_BODY_WALK_A_LEFT = {
+    .fdata = _FDATA_BODY_WALK_A_LEFT,
+    .num_rows = _FDATA_BODY_WALK_A_ROWS,
+    .num_cols = _FDATA_BODY_WALK_A_COLS,
+    .y_offset = 0,
+    .x_offset = 3
+};
+uint8_t _FDATA_BODY_WALK_A_RIGHT[_FDATA_BODY_WALK_A_ROWS * _FDATA_BODY_WALK_A_COLS];
+mewo_frame_info MEWO_BODY_WALK_A_RIGHT;
+
+
 // Head frames
 
 #define _FDATA_HEAD_FORWARD_ROWS (17)
@@ -96,6 +131,9 @@ mewo_frame_info MEWO_HEAD_SIDE_LEFT = {
 uint8_t _FDATA_HEAD_SIDE_RIGHT[_FDATA_HEAD_SIDE_ROWS * _FDATA_HEAD_SIDE_COLS];
 mewo_frame_info MEWO_HEAD_SIDE_RIGHT;
 
+
+// Init
+
 void mewo_frames_init() {
     mirror_x(_FDATA_HEAD_SIDE_LEFT, _FDATA_HEAD_SIDE_RIGHT, _FDATA_HEAD_SIDE_ROWS, _FDATA_HEAD_SIDE_COLS);
     MEWO_HEAD_SIDE_RIGHT = (mewo_frame_info) {
@@ -104,6 +142,15 @@ void mewo_frames_init() {
         .num_cols = _FDATA_HEAD_SIDE_COLS,
         .y_offset = 13,
         .x_offset = -9
+    };
+
+    mirror_x(_FDATA_BODY_WALK_A_LEFT, _FDATA_BODY_WALK_A_RIGHT, _FDATA_BODY_WALK_A_ROWS, _FDATA_BODY_WALK_A_COLS);
+    MEWO_BODY_WALK_A_RIGHT = (mewo_frame_info) {
+        .fdata = _FDATA_BODY_WALK_A_RIGHT,
+        .num_rows = _FDATA_BODY_WALK_A_ROWS,
+        .num_cols = _FDATA_BODY_WALK_A_COLS,
+        .y_offset = 0,
+        .y_offset = 0
     };
 }
 

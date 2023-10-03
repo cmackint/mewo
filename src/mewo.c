@@ -79,11 +79,19 @@ void mewo_refresh(mewo *m) {
     memset(m->vbuffer, 0, sizeof(m->vbuffer));
 
     switch (m->body_frame) {
-        case MEWO_BODY_FRAME_WALK_A:
+        case MEWO_BODY_FRAME_WALK_A_LEFT:
+            // TODO
+            m->body_frame_info = &MEWO_BODY_WALK_A_LEFT;
+            break;
+        case MEWO_BODY_FRAME_WALK_A_RIGHT:
+            // TODO
+            m->body_frame_info = &MEWO_BODY_WALK_A_RIGHT;
+            break;
+        case MEWO_BODY_FRAME_WALK_B_LEFT:
             // TODO
             m->body_frame_info = &MEWO_BODY_SIT;
             break;
-        case MEWO_BODY_FRAME_WALK_B:
+        case MEWO_BODY_FRAME_WALK_B_RIGHT:
             // TODO
             m->body_frame_info = &MEWO_BODY_SIT;
             break;
@@ -205,14 +213,26 @@ void _handle_walk(mewo *m) {
     }
 
     // Set next body frame
-    switch (m->body_frame) {
-        case MEWO_BODY_FRAME_WALK_B:
-            m->body_frame = MEWO_BODY_FRAME_WALK_A;
-            break;
-        case MEWO_BODY_FRAME_WALK_A:
-        default:
-            m->body_frame = MEWO_BODY_FRAME_WALK_B;
-            break;
+    if (m->x_speed < 0 ) {
+        switch (m->body_frame) {
+            case MEWO_BODY_FRAME_WALK_B_LEFT:
+                m->body_frame = MEWO_BODY_FRAME_WALK_A_LEFT;
+                break;
+            case MEWO_BODY_FRAME_WALK_A_LEFT:
+            default:
+                m->body_frame = MEWO_BODY_FRAME_WALK_B_LEFT;
+                break;
+        }
+    } else {
+         switch (m->body_frame) {
+            case MEWO_BODY_FRAME_WALK_B_RIGHT:
+                m->body_frame = MEWO_BODY_FRAME_WALK_A_RIGHT;
+                break;
+            case MEWO_BODY_FRAME_WALK_A_RIGHT:
+            default:
+                m->body_frame = MEWO_BODY_FRAME_WALK_B_RIGHT;
+                break;
+        }
     }
 
     // Set next head frame
