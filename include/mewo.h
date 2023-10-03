@@ -7,11 +7,22 @@
 #define MEWO_DISPLAY_COLS (128)
 #define MEWO_DISPLAY_ROWS (64)
 
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
+#define FOREACH_MEWO_STATE(FN) \
+        FN(MEWO_STATE_SIT) \
+        FN(MEWO_STATE_WALK) \
+        FN (MEWO_STATE_SLEEP)
+
 typedef enum {
-    MEWO_STATE_SIT,
-    MEWO_STATE_WALK,
-    MEWO_STATE_SLEEP,
+    FOREACH_MEWO_STATE(GENERATE_ENUM)
 } mewo_state;
+
+static const char *MEWO_STATE_STRING[] = {
+    FOREACH_MEWO_STATE(GENERATE_STRING)
+};
+
 
 typedef struct {
     uint8_t *fdata;
@@ -27,24 +38,37 @@ typedef struct {
     int num_cols;
 } mewo_head_frame_info;
 
-typedef enum {
-    MEWO_BODY_FRAME_WALK_A_LEFT = 0,
-    MEWO_BODY_FRAME_WALK_A_RIGHT,
-    MEWO_BODY_FRAME_WALK_B_LEFT,
-    MEWO_BODY_FRAME_WALK_B_RIGHT,
-    MEWO_BODY_FRAME_SIT,
-    MEWO_BODY_FRAME_SIT_TAIL,
-    MEWO_BODY_FRAME_SLEEP,
-    MEWO_BODY_FRAME_LEN
-} mewo_body_frame;
 
+#define FOREACH_MEWO_BODY_FRAME(FN) \
+        FN(MEWO_BODY_FRAME_WALK_A_LEFT) \
+        FN(MEWO_BODY_FRAME_WALK_A_RIGHT) \
+        FN(MEWO_BODY_FRAME_WALK_B_LEFT)  \
+        FN(MEWO_BODY_FRAME_WALK_B_RIGHT) \
+        FN(MEWO_BODY_FRAME_SIT) \
+        FN(MEWO_BODY_FRAME_SIT_TAIL) \
+        FN(MEWO_BODY_FRAME_SLEEP) \
+        FN(MEWO_BODY_FRAME_LEN)
 typedef enum {
-    MEWO_HEAD_FRAME_FORWARD = 0,
-    MEWO_HEAD_FRAME_FORWARD_BLINK,
-    MEWO_HEAD_FRAME_SIDE_LEFT,
-    MEWO_HEAD_FRAME_SIDE_RIGHT,
-    MEWO_HEAD_FRAME_LEN
+    FOREACH_MEWO_BODY_FRAME(GENERATE_ENUM)
+} mewo_body_frame;
+static const char *MEWO_BODY_FRAME_STRING[] = {
+    FOREACH_MEWO_BODY_FRAME(GENERATE_STRING)
+};
+
+
+#define FOREACH_MEWO_HEAD_FRAME(FN) \
+        FN(MEWO_HEAD_FRAME_FORWARD) \
+        FN(MEWO_HEAD_FRAME_FORWARD_BLINK) \
+        FN(MEWO_HEAD_FRAME_SIDE_LEFT) \
+        FN(MEWO_HEAD_FRAME_SIDE_RIGHT) \
+        FN(MEWO_HEAD_FRAME_LEN)
+typedef enum {
+    FOREACH_MEWO_HEAD_FRAME(GENERATE_ENUM)
 } mewo_head_frame;
+static const char *MEWO_HEAD_FRAME_STRING[] = {
+    FOREACH_MEWO_HEAD_FRAME(GENERATE_STRING)
+};
+
 
 typedef struct {
     char *name;
@@ -76,7 +100,7 @@ void mewo_tick(mewo *m, uint64_t time_ms);
 
 void mewo_refresh(mewo *m);
 
-bool mewo_get_pixel(mewo *m, int row_index, int col_index);
+bool mewo_get_pixel(mewo *m, int x, int y);
 
 void mewo_set_body_frame(mewo *m, mewo_body_frame frame);
 

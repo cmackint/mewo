@@ -18,13 +18,20 @@ void _handle_state(mewo *m);
 void _check_sleep_transition();
 
 void mewo_init(mewo *m, mewo_config *config, uint64_t time_ms) {
+    mewo_frames_init();
+
     m->config = config;
     m->time_ms;
-    m->last_trans_ms = time_ms;
     m->state = MEWO_STATE_SIT;
-
+    m->last_trans_ms = time_ms;
+    m->x_pos = 20;
+    m->x_speed = 0;
+    m->body_frame = MEWO_BODY_FRAME_SIT;
+    m->body_frame_info = NULL;
+    m->head_frame = MEWO_HEAD_FRAME_FORWARD;
+    m->head_frame_info = NULL;
+    m->stale = true;
     memset(m->vbuffer, 0, sizeof(m->vbuffer));
-    mewo_frames_init();
 }
 
 void mewo_tick(mewo *m, uint64_t time_ms) {
@@ -72,27 +79,24 @@ void _load_bitmap(mewo *m, int start_x, int start_y, uint8_t *fdata, int num_row
 }
 
 void mewo_refresh(mewo *m) {
-    if (!m->stale) {
-        return;
-    }
+    // TODO
+    // if (!m->stale) {
+    //     return;
+    // }
 
     memset(m->vbuffer, 0, sizeof(m->vbuffer));
 
     switch (m->body_frame) {
         case MEWO_BODY_FRAME_WALK_A_LEFT:
-            // TODO
             m->body_frame_info = &MEWO_BODY_WALK_A_LEFT;
             break;
         case MEWO_BODY_FRAME_WALK_A_RIGHT:
-            // TODO
             m->body_frame_info = &MEWO_BODY_WALK_A_RIGHT;
             break;
         case MEWO_BODY_FRAME_WALK_B_LEFT:
-            // TODO
             m->body_frame_info = &MEWO_BODY_WALK_B_LEFT;
             break;
         case MEWO_BODY_FRAME_WALK_B_RIGHT:
-            // TODO
             m->body_frame_info = &MEWO_BODY_WALK_B_RIGHT;
             break;
         case MEWO_BODY_FRAME_SIT:
@@ -150,6 +154,7 @@ void _handle_sit(mewo *m) {
     // Check for bed time
     if (m->time_ms >= m->config->sleep_time_ms) {
         m->state = MEWO_STATE_WALK;
+        m->stale = true;
         return;
     }
 
@@ -164,6 +169,7 @@ void _handle_sit(mewo *m) {
                 m->body_frame = MEWO_BODY_FRAME_SIT;
                 break;
         }
+        m->stale = true;
     }
 
     // Ocassionally move head to random direction
@@ -179,6 +185,7 @@ void _handle_sit(mewo *m) {
                 m->head_frame = MEWO_HEAD_FRAME_SIDE_RIGHT;
                 break;
         }
+        m->stale = true;
     }
 }
 
@@ -205,10 +212,17 @@ void _handle_walk(mewo *m) {
         } else {
             m->x_speed = 1;
         }
-        // TODO: Make this more interesting
     }
 
-    // Set next body frame
+    // Set next position
+    m->x_pos = m->x_pos + m->x_speed;
+    if (m->x_pos < 0) {
+        m->x_pos = 0;
+    } else if (m->x_pos > MEWO_DISPLAY_COLS - 1) {
+        m->x_pos = MEWO_DISPLAY_COLS - 1;
+    }
+
+    // Set next frames
     if (m->x_speed < 0 ) {
         switch (m->body_frame) {
             case MEWO_BODY_FRAME_WALK_B_LEFT:
@@ -219,6 +233,7 @@ void _handle_walk(mewo *m) {
                 m->body_frame = MEWO_BODY_FRAME_WALK_B_LEFT;
                 break;
         }
+        m->head_frame = MEWO_HEAD_FRAME_SIDE_LEFT;
     } else {
          switch (m->body_frame) {
             case MEWO_BODY_FRAME_WALK_B_RIGHT:
@@ -229,10 +244,8 @@ void _handle_walk(mewo *m) {
                 m->body_frame = MEWO_BODY_FRAME_WALK_B_RIGHT;
                 break;
         }
+        m->head_frame = MEWO_HEAD_FRAME_SIDE_RIGHT;
     }
-
-    // Set next head frame
-    m->head_frame = m->head_frame;
 }
 
 void _handle_sleep(mewo *m) {

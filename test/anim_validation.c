@@ -9,7 +9,8 @@
 
 void run_frame_validation();
 WINDOW *create_win(int startx, int starty, int lines, int columns);
-void draw_mewo(WINDOW *win, mewo *m, int board_startx, int board_starty);
+void draw_mewo(WINDOW *win, mewo *m);
+void draw_stats(WINDOW *win, mewo *m);
 
 int main() {	
 	initscr();
@@ -29,47 +30,86 @@ int main() {
 }
 
 void run_frame_validation() {
-    WINDOW *win = create_win(0, 0, LINES, COLS);
-    int board_startx = 1;
-    int board_starty = 1;
-    int board_width = COLS - 2;
-    int board_height = LINES - 4;
+    int board_win_startx = 0;
+    int board_win_starty = 0;
+    int board_win_width = MEWO_DISPLAY_COLS + 2;
+    int board_win_height = MEWO_DISPLAY_ROWS + 2;
+    WINDOW *board_win = create_win(board_win_startx, board_win_starty, board_win_height, board_win_width);
+
+    int stats_win_startx = board_win_startx + board_win_width + 1;
+    int stats_win_starty = 0;
+    int stats_win_width = 50;
+    int stats_win_height = board_win_height;
+    WINDOW *stats_win = create_win(stats_win_startx, stats_win_starty, stats_win_height, stats_win_width);
 
     mewo_config m_conf = {
         .name = "Mewo",
-        .wakeup_time_ms = 0,
-        .sleep_time_ms = 0
+        .wakeup_time_ms = -1,
+        .sleep_time_ms = -1
     };
     mewo m = {};
+    int clock = 0;
+    mewo_init(&m, &m_conf, clock);
 
-    mewo_init(&m, &m_conf, 0);
+    while (1) {
+        mewo_tick(&m, clock);
+        draw_mewo(board_win, &m);
+        draw_stats(stats_win, &m);
 
-    mewo_set_body_frame(&m, MEWO_BODY_FRAME_SIT);
-    mewo_set_head_frame(&m, MEWO_HEAD_FRAME_FORWARD);
-    mewo_refresh(&m);
+        int ch = wgetch(board_win);
+        if (ch == 'q') {
+            break;
+        }
 
-    draw_mewo(win, &m, board_startx, board_starty);
-    wrefresh(win);
-
-    wgetch(win);
+        clock += 10;
+    }
 }
 
-void draw_mewo(WINDOW *win, mewo *m, int board_startx, int board_starty) {
-    wattron(win, COLOR_PAIR(1));
+void draw_stats(WINDOW *win, mewo *m) {
+    int win_height, win_width;
+    getmaxyx(win, win_height, win_width);
+    
+    char buffer[128];
 
+    snprintf(buffer, sizeof(buffer), "mewo debugging info");
+    mvwprintw(win, 0, (win_width - strlen(buffer)) / 2, buffer);
+
+    snprintf(buffer, sizeof(buffer), "time: %d", m->time_ms);
+    mvwprintw(win, 4, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "state: %s", MEWO_STATE_STRING[m->state]);
+    mvwprintw(win, 5, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "head frame: %s", MEWO_HEAD_FRAME_STRING[m->head_frame]);
+    mvwprintw(win, 6, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "body frame: %s", MEWO_BODY_FRAME_STRING[m->body_frame]);
+    mvwprintw(win, 7, 3, buffer);
+
+    wrefresh(win);
+}
+
+void draw_mewo(WINDOW *win, mewo *m) {
+    int startx = 1;
+    int starty = 1;
+
+    wattron(win, COLOR_PAIR(1));
     for (int row_index = 0; row_index < MEWO_DISPLAY_ROWS; row_index++) {
         for (int col_index = 0; col_index < MEWO_DISPLAY_COLS; col_index++) {
-            bool pixel = mewo_get_pixel(m, row_index, col_index);
+            int x = col_index;
+            int y = MEWO_DISPLAY_ROWS - row_index;
+            bool pixel = mewo_get_pixel(m, x, y);
 
             if (pixel) {
-                mvwaddch(win, board_starty + row_index, board_startx + col_index, ACS_CKBOARD);
+                mvwaddch(win, starty + row_index, startx + col_index, ACS_CKBOARD);
             } else {
-                mvwaddch(win, board_starty + row_index, board_startx + col_index, '_');
+                mvwaddch(win, starty + row_index, startx + col_index, '_');
             }
         }
     }
-
     wattroff(win, COLOR_PAIR(1));
+
+    wrefresh(win);
 }
 
 WINDOW *create_win(int startx, int starty, int lines, int columns) {
