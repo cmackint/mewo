@@ -8,8 +8,8 @@
 int X_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
     {-7, 0, -3, -8},
     {14, 0, 18, 12},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
+    {-8, 0, -4, -10},
+    {7, 0, 11, 4},
     {-6, 0, -2, -8},
     {0, 0, 0, 0},
     {0, 0, 0, 0}
@@ -18,8 +18,8 @@ int X_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
 int Y_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
     {13, 0, 13, 13},
     {13, 0, 13, 13},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0},
+    {13, 0, 13, 13},
+    {13, 0, 13, 13},
     {13, 0, 13, 13},
     {0, 0, 0, 0},
     {0, 0, 0, 0}
@@ -85,6 +85,40 @@ mewo_body_frame_info MEWO_BODY_WALK_A_LEFT = {
 };
 uint8_t _FDATA_BODY_WALK_A_RIGHT[_FDATA_BODY_WALK_A_ROWS * _FDATA_BODY_WALK_A_COLS];
 mewo_body_frame_info MEWO_BODY_WALK_A_RIGHT;
+
+#define _FDATA_BODY_WALK_B_ROWS (20)
+#define _FDATA_BODY_WALK_B_COLS (3)
+uint8_t _FDATA_BODY_WALK_B_LEFT[_FDATA_BODY_WALK_B_ROWS * _FDATA_BODY_WALK_B_COLS] = {
+    0x00, 0x00, 0x02,
+    0x00, 0x00, 0x05,
+    0x00, 0x00, 0x05,
+    0x00, 0x00, 0x05,
+    0x00, 0x00, 0x09,
+    0x00, 0x00, 0x0a,
+    0x40, 0x80, 0x12,
+    0x80, 0x7f, 0xe4,
+    0x80, 0x00, 0x08,
+    0x80, 0x00, 0x08,
+    0x80, 0x00, 0x08,
+    0x80, 0x00, 0x10,
+    0x80, 0x00, 0x10,
+    0x44, 0x04, 0x10,
+    0x44, 0x04, 0x08,
+    0xa7, 0x82, 0x08,
+    0xa4, 0x7d, 0x88,
+    0xa4, 0x01, 0x48,
+    0xa4, 0x01, 0x48,
+    0x78, 0x00, 0xf0
+};
+mewo_body_frame_info MEWO_BODY_WALK_B_LEFT = {
+    .fdata = _FDATA_BODY_WALK_B_LEFT,
+    .num_rows = _FDATA_BODY_WALK_B_ROWS,
+    .num_cols = _FDATA_BODY_WALK_B_COLS,
+    .y_offset = 0,
+    .x_offset = 8
+};
+uint8_t _FDATA_BODY_WALK_B_RIGHT[_FDATA_BODY_WALK_B_ROWS * _FDATA_BODY_WALK_B_COLS];
+mewo_body_frame_info MEWO_BODY_WALK_B_RIGHT;
 
 
 // Head frames
@@ -164,6 +198,15 @@ void mewo_frames_init() {
         .num_cols = _FDATA_BODY_WALK_A_COLS,
         .y_offset = 0,
         .x_offset = -5
+    };
+    
+    mirror_x(_FDATA_BODY_WALK_B_LEFT, _FDATA_BODY_WALK_B_RIGHT, _FDATA_BODY_WALK_B_ROWS, _FDATA_BODY_WALK_B_COLS);
+    MEWO_BODY_WALK_B_RIGHT = (mewo_body_frame_info) {
+        .fdata = _FDATA_BODY_WALK_B_RIGHT,
+        .num_rows = _FDATA_BODY_WALK_B_ROWS,
+        .num_cols = _FDATA_BODY_WALK_B_COLS,
+        .y_offset = 0,
+        .x_offset = 1
     };
 }
 

@@ -89,11 +89,11 @@ void mewo_refresh(mewo *m) {
             break;
         case MEWO_BODY_FRAME_WALK_B_LEFT:
             // TODO
-            m->body_frame_info = &MEWO_BODY_SIT;
+            m->body_frame_info = &MEWO_BODY_WALK_B_LEFT;
             break;
         case MEWO_BODY_FRAME_WALK_B_RIGHT:
             // TODO
-            m->body_frame_info = &MEWO_BODY_SIT;
+            m->body_frame_info = &MEWO_BODY_WALK_B_RIGHT;
             break;
         case MEWO_BODY_FRAME_SIT:
             m->body_frame_info = &MEWO_BODY_SIT;
@@ -114,10 +114,6 @@ void mewo_refresh(mewo *m) {
 
     switch (m->head_frame) {
         case MEWO_HEAD_FRAME_FORWARD:
-            m->head_frame_info = &MEWO_HEAD_FORWARD;
-            break;
-        case MEWO_HEAD_FRAME_FORWARD_BLINK:
-            // TODO
             m->head_frame_info = &MEWO_HEAD_FORWARD;
             break;
         case MEWO_HEAD_FRAME_SIDE_LEFT:

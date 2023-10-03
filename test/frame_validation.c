@@ -71,6 +71,40 @@ void run_frame_validation() {
     // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_FORWARD);
     // mewo_refresh(&m);
     // draw_mewo(&m);
+
+
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_LEFT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_SIDE_LEFT);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_LEFT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_SIDE_RIGHT);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_LEFT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_FORWARD);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
+
+
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_RIGHT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_SIDE_RIGHT);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_RIGHT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_SIDE_LEFT);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
+
+    // mewo_set_body_frame(&m, MEWO_BODY_FRAME_WALK_B_RIGHT);
+    // mewo_set_head_frame(&m, MEWO_HEAD_FRAME_FORWARD);
+    // mewo_refresh(&m);
+    // draw_mewo(&m);
 }
 
 void draw_mewo(mewo *m) {

@@ -30,7 +30,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--img", "../Art/frames/body_walk_left_a.bmp"]
+            "args":["--img", "../Art/frames/body_walk_left_b.bmp"]
         }
     ]
 }
