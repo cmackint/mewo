@@ -81,7 +81,7 @@ typedef struct {
     uint64_t time_ms;
     mewo_state state;
     uint64_t last_trans_ms;
-    uint16_t x_pos;
+    int x_pos;
     int16_t x_speed;
     mewo_body_frame body_frame;
     mewo_body_frame_info *body_frame_info;

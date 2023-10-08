@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "mewo.h"
+#include "frames.h"
 
 void run_frame_validation();
 WINDOW *create_win(int startx, int starty, int lines, int columns);
@@ -71,27 +72,38 @@ void draw_stats(WINDOW *win, mewo *m) {
     
     char buffer[128];
 
-    snprintf(buffer, sizeof(buffer), "mewo debugging info");
+    snprintf(buffer, sizeof(buffer), "mewo debugging info            ");
     mvwprintw(win, 0, (win_width - strlen(buffer)) / 2, buffer);
 
-    snprintf(buffer, sizeof(buffer), "time: %d     ", m->time_ms);
+    snprintf(buffer, sizeof(buffer), "time: %d             ", m->time_ms);
     mvwprintw(win, 4, 3, buffer);
 
     
-    snprintf(buffer, sizeof(buffer), "state: %s", MEWO_STATE_STRING[m->state]);
+    snprintf(buffer, sizeof(buffer), "state: %s            ", MEWO_STATE_STRING[m->state]);
     mvwprintw(win, 5, 3, buffer);
     
-    snprintf(buffer, sizeof(buffer), "head frame: %s", MEWO_HEAD_FRAME_STRING[m->head_frame]);
+    snprintf(buffer, sizeof(buffer), "head frame: %s       ", MEWO_HEAD_FRAME_STRING[m->head_frame]);
     mvwprintw(win, 6, 3, buffer);
     
-    snprintf(buffer, sizeof(buffer), "body frame: %s", MEWO_BODY_FRAME_STRING[m->body_frame]);
+    snprintf(buffer, sizeof(buffer), "body frame: %s       ", MEWO_BODY_FRAME_STRING[m->body_frame]);
     mvwprintw(win, 7, 3, buffer);
     
-    snprintf(buffer, sizeof(buffer), "x position: %d", m->x_pos);
+    snprintf(buffer, sizeof(buffer), "x position: %d       ", m->x_pos);
     mvwprintw(win, 8, 3, buffer);
     
-    snprintf(buffer, sizeof(buffer), "x speed: %d", m->x_speed);
+    snprintf(buffer, sizeof(buffer), "x speed: %d          ", m->x_speed);
     mvwprintw(win, 9, 3, buffer);
+
+    int mewo_body_left_bound = m->x_pos + m->body_frame_info->x_offset;
+    int mewo_body_right_bound = mewo_body_left_bound + m->body_frame_info->num_cols * 8;
+    int mewo_head_left_bound = mewo_body_left_bound + X_OFFSETS[m->body_frame][m->head_frame];
+    int mewo_head_right_bound = mewo_head_left_bound + m->head_frame_info->num_cols * 8;
+
+    snprintf(buffer, sizeof(buffer), "body: %d, %d         ", mewo_body_left_bound, mewo_body_right_bound);
+    mvwprintw(win, 10, 3, buffer);
+    
+    snprintf(buffer, sizeof(buffer), "head: %d, %d         ", mewo_head_left_bound, mewo_head_right_bound);
+    mvwprintw(win, 11, 3, buffer);
 
     wrefresh(win);
 }

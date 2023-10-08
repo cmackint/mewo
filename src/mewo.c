@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdlib.h>
 #include "mewo.h"
 #include "frames.h"
 #include "transforms.h"
@@ -79,11 +80,6 @@ void _load_bitmap(mewo *m, int start_x, int start_y, uint8_t *fdata, int num_row
 }
 
 void mewo_refresh(mewo *m) {
-    // TODO
-    // if (!m->stale) {
-    //     return;
-    // }
-
     memset(m->vbuffer, 0, sizeof(m->vbuffer));
 
     switch (m->body_frame) {
@@ -195,42 +191,30 @@ void _handle_sit(mewo *m) {
 }
 
 void _handle_walk(mewo *m) {
-    // if (m->time_ms >= m->config->sleep_time_ms) {
-    //     // Set the speed to walk to bed
-    //     if (m->x_pos > SLEEP_X_POS) {
-    //         // Walk to the left
-    //         m->x_speed = -1;
-    //     } else if (m->x_pos < SLEEP_X_POS) {
-    //         // Walk to the right
-    //         m->x_speed = 1;
-    //     } else {
-    //         m->x_speed = 0;
-    //         m->state = MEWO_STATE_SLEEP;
-    //         return;
-    //     }
-    // } else {
-        // Set the speed to walk back + forth
-        if (m->x_pos <= 0) {
-            m->x_speed = 1;
-        } else if (m->x_pos >= MEWO_DISPLAY_COLS-1) {
-            m->x_speed = -1;
-        } else if (m->x_speed == 0) {
-            m->x_speed = 1;
-        }
-    // }
-
-    if (rand() % 50 == 0) {
-        m->state = MEWO_STATE_SIT;
-        m->x_speed = 0;
-    }
-
     // Set next position
     m->x_pos = m->x_pos + m->x_speed;
-    if (m->x_pos < 0) {
-        m->x_pos = 0;
-    } else if (m->x_pos > MEWO_DISPLAY_COLS - 1) {
-        m->x_pos = MEWO_DISPLAY_COLS - 1;
+
+    int mewo_body_left_bound = m->x_pos + m->body_frame_info->x_offset;
+    int mewo_body_right_bound = mewo_body_left_bound + m->body_frame_info->num_cols * 8;
+    int mewo_head_left_bound = mewo_body_left_bound + X_OFFSETS[m->body_frame][m->head_frame];
+    int mewo_head_right_bound = mewo_head_left_bound + m->head_frame_info->num_cols * 8;
+    int mewo_left_bound = mewo_body_left_bound < mewo_head_left_bound ? mewo_body_left_bound : mewo_head_left_bound;
+    int mewo_right_bound = mewo_body_right_bound > mewo_head_right_bound ? mewo_body_right_bound : mewo_head_right_bound;
+
+    if (mewo_left_bound <= 0) {
+        m->x_pos = m->x_pos + 1;
+        m->x_speed = 1;
+    } else if (mewo_right_bound >= MEWO_DISPLAY_COLS - 1) {
+        m->x_pos = m->x_pos - 1;
+        m->x_speed = -1;
+    } else if (m->x_speed == 0) {
+        m->x_speed = 1;
     }
+
+    // if (rand() % 50 == 0) {
+    //     m->state = MEWO_STATE_SIT;
+    //     m->x_speed = 0;
+    // }
 
     // Set next frames
     if (m->x_speed < 0 ) {

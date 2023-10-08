@@ -4,16 +4,19 @@ project(mewo C)
 add_executable(mewo 
     src/main.c
     src/mewo.c
+    src/frames.c
     src/transforms.c
 )
 add_executable(frame_validation
     src/mewo.c
     src/transforms.c
+    src/frames.c
     test/frame_validation.c
 )
 add_executable(anim_validation
     src/mewo.c
     src/transforms.c
+    src/frames.c
     test/anim_validation.c
 )
 
