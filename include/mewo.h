@@ -9,6 +9,7 @@
 
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
+#define GENERATE_SELF(SELF) SELF
 
 #define FOREACH_MEWO_STATE(FN) \
         FN(MEWO_STATE_SIT) \
@@ -22,7 +23,6 @@ typedef enum {
 static const char *MEWO_STATE_STRING[] = {
     FOREACH_MEWO_STATE(GENERATE_STRING)
 };
-
 
 typedef struct {
     uint8_t *fdata;

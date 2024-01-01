@@ -125,8 +125,8 @@ void mewo_refresh(mewo *m) {
             break;
     }
             
-    int head_x = body_x + X_OFFSETS[m->body_frame][m->head_frame];
-    int head_y = body_y + Y_OFFSETS[m->body_frame][m->head_frame];
+    int head_x = body_x + MEWO_FRAMES_X_OFFSETS[m->body_frame][m->head_frame];
+    int head_y = body_y + MEWO_FRAMES_Y_OFFSETS[m->body_frame][m->head_frame];
     _load_bitmap(m, head_x, head_y, m->head_frame_info->fdata, m->head_frame_info->num_rows, m->head_frame_info->num_cols);
 
     m->stale = false;
@@ -196,7 +196,7 @@ void _handle_walk(mewo *m) {
 
     int mewo_body_left_bound = m->x_pos + m->body_frame_info->x_offset;
     int mewo_body_right_bound = mewo_body_left_bound + m->body_frame_info->num_cols * 8;
-    int mewo_head_left_bound = mewo_body_left_bound + X_OFFSETS[m->body_frame][m->head_frame];
+    int mewo_head_left_bound = mewo_body_left_bound + MEWO_FRAMES_X_OFFSETS[m->body_frame][m->head_frame];
     int mewo_head_right_bound = mewo_head_left_bound + m->head_frame_info->num_cols * 8;
     int mewo_left_bound = mewo_body_left_bound < mewo_head_left_bound ? mewo_body_left_bound : mewo_head_left_bound;
     int mewo_right_bound = mewo_body_right_bound > mewo_head_right_bound ? mewo_body_right_bound : mewo_head_right_bound;

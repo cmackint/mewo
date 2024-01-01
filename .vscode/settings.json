@@ -2,7 +2,8 @@
     "files.associations": {
         "curses.h": "c",
         "ncurses.h": "c",
-        "mewo.h": "c"
+        "mewo.h": "c",
+        "stdint.h": "c"
     },
     "cmake.configureOnOpen": false
 }
