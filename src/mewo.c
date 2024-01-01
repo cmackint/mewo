@@ -116,6 +116,9 @@ void mewo_refresh(mewo *m) {
         case MEWO_HEAD_FRAME_FORWARD:
             m->head_frame_info = &MEWO_HEAD_FORWARD;
             break;
+        case MEWO_HEAD_FRAME_FORWARD_EYES_CLOSED:
+            m->head_frame_info = &MEWO_HEAD_FORWARD_EYES_CLOSED;
+            break;
         case MEWO_HEAD_FRAME_SIDE_LEFT:
             m->head_frame_info = &MEWO_HEAD_SIDE_LEFT;
             break;

@@ -30,7 +30,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--img", "../Art/frames/body_sit_tail.bmp"]
+            "args":["--img", "../Art/frames/head_forward_eyes_closed.bmp"]
         }
     ]
 }
