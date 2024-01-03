@@ -8,7 +8,7 @@ int MEWO_FRAMES_X_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
     {7, 7, 11, 4}, // MEWO_BODY_FRAME_WALK_B_RIGHT
     {-6, -6, -2, -8}, // MEWO_BODY_FRAME_SIT
     {-6, -6, -2, -8}, // MEWO_BODY_FRAME_SIT_TAIL
-    {0, 0, 0, 0} // MEWO_BODY_FRAME_SLEEP
+    {-4, -4, 0, 0} // MEWO_BODY_FRAME_SLEEP
 };
 
 int MEWO_FRAMES_Y_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
@@ -18,7 +18,7 @@ int MEWO_FRAMES_Y_OFFSETS[MEWO_BODY_FRAME_LEN][MEWO_HEAD_FRAME_LEN] = {
     {13, 13, 13, 13}, // MEWO_BODY_FRAME_WALK_B_RIGHT
     {13, 13, 13, 13}, // MEWO_BODY_FRAME_SIT
     {13, 13, 13, 13}, // MEWO_BODY_FRAME_SIT_TAIL
-    {0, 0, 0, 0} // MEWO_BODY_FRAME_SLEEP
+    {1, 1, 0, 0} // MEWO_BODY_FRAME_SLEEP
 };
 
 ////////
@@ -151,6 +151,34 @@ mewo_body_frame_info MEWO_BODY_WALK_B_LEFT = {
 };
 uint8_t _FDATA_BODY_WALK_B_RIGHT[_FDATA_BODY_WALK_B_ROWS * _FDATA_BODY_WALK_B_COLS];
 mewo_body_frame_info MEWO_BODY_WALK_B_RIGHT;
+
+
+#define _FDATA_BODY_SLEEP_ROWS (15)
+#define _FDATA_BODY_SLEEP_COLS (5)
+uint8_t _FDATA_BODY_SLEEP[_FDATA_BODY_SLEEP_ROWS * _FDATA_BODY_SLEEP_COLS] = {
+    0x00, 0x00, 0x07, 0xe0, 0x00,
+    0x00, 0x00, 0x00, 0x1e, 0x00,
+    0x00, 0x00, 0x00, 0x01, 0x80,
+    0x00, 0x00, 0x00, 0x00, 0x80,
+    0x00, 0x00, 0x00, 0x00, 0x60,
+    0x00, 0x00, 0x00, 0x00, 0x20,
+    0x00, 0x00, 0x00, 0x00, 0x20,
+    0x00, 0x00, 0x00, 0x00, 0x20,
+    0x00, 0x00, 0x00, 0x01, 0x60,
+    0x00, 0x00, 0x00, 0x01, 0x40,
+    0x00, 0x00, 0x00, 0x02, 0x40,
+    0x80, 0x00, 0x20, 0x7c, 0x80,
+    0x80, 0x01, 0x3f, 0x81, 0x00,
+    0x84, 0x00, 0xe0, 0x7e, 0x00,
+    0x7c, 0x1f, 0x00, 0x00, 0x00
+};
+mewo_body_frame_info MEWO_BODY_SLEEP = {
+    .fdata = _FDATA_BODY_SLEEP,
+    .num_rows = _FDATA_BODY_SLEEP_ROWS,
+    .num_cols = _FDATA_BODY_SLEEP_COLS,
+    .y_offset = 1,
+    .x_offset = 0
+};
 
 ////////
 // Head frames

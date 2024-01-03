@@ -56,6 +56,13 @@ void run_frame_validation() {
 
     for (int body_frame = 0; body_frame < MEWO_BODY_FRAME_LEN; body_frame++) {
         for (int head_frame = 0; head_frame < MEWO_HEAD_FRAME_LEN; head_frame++) {
+
+            if (body_frame == MEWO_BODY_FRAME_SLEEP) {
+                if (head_frame == MEWO_HEAD_FRAME_SIDE_LEFT || head_frame == MEWO_HEAD_FRAME_SIDE_RIGHT) {
+                    continue;
+                }
+            }
+
             mewo_set_body_frame(&m, body_frame);
             mewo_set_head_frame(&m, head_frame);
             mewo_refresh(&m);

@@ -17,6 +17,7 @@ extern mewo_body_frame_info MEWO_BODY_WALK_A_LEFT;
 extern mewo_body_frame_info MEWO_BODY_WALK_A_RIGHT;
 extern mewo_body_frame_info MEWO_BODY_WALK_B_LEFT;
 extern mewo_body_frame_info MEWO_BODY_WALK_B_RIGHT;
+extern mewo_body_frame_info MEWO_BODY_SLEEP;
 
 
 // Head frames

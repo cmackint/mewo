@@ -3,7 +3,8 @@
         "curses.h": "c",
         "ncurses.h": "c",
         "mewo.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "transforms.h": "c"
     },
     "cmake.configureOnOpen": false
 }

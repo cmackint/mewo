@@ -99,12 +99,10 @@ void mewo_refresh(mewo *m) {
             m->body_frame_info = &MEWO_BODY_SIT;
             break;
         case MEWO_BODY_FRAME_SIT_TAIL:
-            // TODO
             m->body_frame_info = &MEWO_BODY_SIT_TAIL;
             break;
         case MEWO_BODY_FRAME_SLEEP:
-            // TODO
-            m->body_frame_info = &MEWO_BODY_SIT;
+            m->body_frame_info = &MEWO_BODY_SLEEP;
             break;
     }
 
@@ -123,7 +121,6 @@ void mewo_refresh(mewo *m) {
             m->head_frame_info = &MEWO_HEAD_SIDE_LEFT;
             break;
         case MEWO_HEAD_FRAME_SIDE_RIGHT:
-            // TODO: Mirror
             m->head_frame_info = &MEWO_HEAD_SIDE_RIGHT;
             break;
     }
@@ -150,11 +147,8 @@ void _handle_state(mewo *m) {
 }
 
 void _handle_sit(mewo *m) {
-    // Check for bed time
-    if (m->time_ms >= m->config->sleep_time_ms) {
-        m->state = MEWO_STATE_WALK;
-        m->stale = true;
-        return;
+    if (m->body_frame != MEWO_BODY_FRAME_SIT && m->body_frame != MEWO_BODY_FRAME_SIT_TAIL) {
+        m->body_frame = MEWO_BODY_FRAME_SIT;
     }
 
     // Occasionally move tail
@@ -187,6 +181,12 @@ void _handle_sit(mewo *m) {
         m->stale = true;
     }
 
+    // Ocassionally sleep
+    if (rand() % 200 == 0)  {
+        m->state = MEWO_STATE_SLEEP;
+        return;
+    }
+
     // Ocassionally walk around
     if (rand() % 100 == 0) {
         m->state = MEWO_STATE_WALK;
@@ -214,10 +214,11 @@ void _handle_walk(mewo *m) {
         m->x_speed = 1;
     }
 
-    // if (rand() % 50 == 0) {
-    //     m->state = MEWO_STATE_SIT;
-    //     m->x_speed = 0;
-    // }
+    // Occasionally sit
+    if (rand() % 100 == 0) {
+        m->state = MEWO_STATE_SIT;
+        m->x_speed = 0;
+    }
 
     // Set next frames
     if (m->x_speed < 0 ) {
@@ -246,8 +247,27 @@ void _handle_walk(mewo *m) {
 }
 
 void _handle_sleep(mewo *m) {
-    if (m->time_ms >= m->config->wakeup_time_ms) {
+    if (m->head_frame != MEWO_HEAD_FRAME_FORWARD && m->head_frame != MEWO_HEAD_FRAME_FORWARD_EYES_CLOSED) {
+        m->head_frame = MEWO_HEAD_FRAME_FORWARD;
+    }
+
+    m->body_frame = MEWO_BODY_FRAME_SLEEP;
+
+    if (rand() % 50 == 0 && m->head_frame == MEWO_HEAD_FRAME_FORWARD) {
+        m->head_frame = MEWO_HEAD_FRAME_FORWARD_EYES_CLOSED;
+        m->stale = true;
+        return;
+    }
+    
+    if (rand() % 50 == 0 && m->head_frame == MEWO_HEAD_FRAME_FORWARD) {
         m->state = MEWO_STATE_SIT;
+        m->stale = true;
+        return;
+    }
+
+    if (rand() % 300 == 0 && m->head_frame == MEWO_HEAD_FRAME_FORWARD_EYES_CLOSED) {
+        m->head_frame = MEWO_HEAD_FRAME_FORWARD;
+        m->stale = true;
         return;
     }
 }
